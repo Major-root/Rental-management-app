@@ -1,0 +1,23 @@
+Items
+GET /items - List all items.
+GET /items/:id - Get details of a specific item.
+POST /items - Add a new item.
+PUT /items/:id - Update an existing item.
+DELETE /items/:id - Delete an item.
+Bookings
+GET /bookings - List all bookings.
+GET /bookings/:id - Get details of a specific booking.
+POST /bookings - Create a new booking.
+PUT /bookings/:id - Update an existing booking.
+DELETE /bookings/:id - Cancel a booking.
+Users
+GET /users - List all users.
+GET /users/:id - Get details of a specific user.
+POST /users - Register a new user.
+PUT /users/:id - Update user information.
+DELETE /users/:id - Delete a user.
+Notifications
+GET /notifications - List all notifications.
+POST /notifications - Create a new notification (e.g., reminder for upcoming delivery).
+Search and Availability
+GET /search - Search for available items based on criteria (e.g., item type, availability).
