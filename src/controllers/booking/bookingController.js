@@ -53,7 +53,7 @@ router.patch(
 
 router.get(
   "/check-availability",
-  inputs.available(),
+  // inputs.available(),
   catchAsync(async (req, res, next) => {
     const result = await bookingQuery.getAllAvailableItems(req);
     console.log("in the testing");
