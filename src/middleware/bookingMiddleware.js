@@ -79,9 +79,10 @@ class BookingMiddleware {
 
   available() {
     return celebrate({
-      [Segments.BODY]: Joi.object().keys({
+      [Segments.QUERY]: Joi.object().keys({
         startDate: Joi.date().required().label("startDate"),
         endDate: Joi.date().default(Joi.ref("startDate")).label("endDate"),
+        items: Joi.string().label("items"),
       }),
     });
   }

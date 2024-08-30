@@ -7,7 +7,37 @@ const {
 } = require("../../database/models");
 const { Op } = require("sequelize");
 
-//  add a method that confirms that a user only books item they have.
+const existingBookingsQuery = (startDate, endDate) => {
+  return {
+    status: "confirmed",
+    [Op.or]: [
+      { startDate: { [Op.between]: [startDate, endDate] } },
+      { endDate: { [Op.between]: [startDate, endDate] } },
+      {
+        startDate: { [Op.lte]: startDate },
+        endDate: { [Op.gte]: endDate },
+      },
+    ],
+  };
+};
+
+const populateBookedItemsPerDay = (existingBookings, bookedItemsPerDay) => {
+  return existingBookings.forEach((booking) => {
+    booking.bookingItems.forEach((item) => {
+      let currentDate = new Date(booking.startDate);
+      while (currentDate <= new Date(booking.endDate)) {
+        const dateStr = currentDate.toISOString().split("T")[0];
+        if (bookedItemsPerDay[dateStr]) {
+          const itemName = item.name;
+          if (!bookedItemsPerDay[dateStr][itemName])
+            bookedItemsPerDay[dateStr][itemName] = 0;
+          bookedItemsPerDay[dateStr][itemName] += item.quantity;
+        }
+        currentDate.setDate(currentDate.getDate() + 1);
+      }
+    });
+  });
+};
 
 const initializeBookingDays = (startDate, endDate) => {
   const bookedItemsPerDay = {};
@@ -257,5 +287,33 @@ exports.updateBooking = async (req) => {
 };
 
 exports.getAllAvailableItems = async (req) => {
-  //
+  const { startDate, endDate, items } = req.body;
+  const { userId } = req.user;
+  const totalItems = await bookedItems.findAll({ where: { userId } });
+  const itemArray = items ? items.split(",") : [];
+  const existingBookings = await Booking.findAll({
+    where: existingBookingsQuery(startDate, endDate),
+    include: { model: BookingItem, as: "bookingItems" },
+  });
+
+  bookedItemsPerDay = initializeBookingDays(startDate, endDate);
+
+  populateBookedItemsPerDay(existingBookings, bookedItemsPerDay);
+  // totalItems - bookeditemsperday
+  const totalInventory = totalItems.reduce((acc, item) => {
+    acc[item.name] = item.quantity;
+    return acc;
+  }, {});
+
+  let currentDate = new Date(startDate);
+  while (currentDate <= new Date(endDate)) {
+    const dateStr = currentDate.toISOString().split("T")[0];
+    itemArray.forEach((item) => {
+      const bookedQuantity = bookedItemsPerDay[dateStr][item];
+      bookedItemsPerDay[dateStr][item] = totalInventory[item] - bookedQuantity;
+    });
+    currentDate.setDate(currentDate.getDate() + 1);
+  }
+
+  return bookedItemsPerDay;
 };

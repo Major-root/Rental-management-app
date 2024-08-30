@@ -51,11 +51,12 @@ router.patch(
   })
 );
 
-router.post(
-  "/all-items",
+router.get(
+  "/check-availability",
   inputs.available(),
   catchAsync(async (req, res, next) => {
     const result = await bookingQuery.getAllAvailableItems(req);
+    console.log("in the testing");
     response.success(res, "All availble items fetched", result);
   })
 );
