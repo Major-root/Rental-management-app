@@ -32,6 +32,14 @@ router.get(
     response.success(res, "Bookings successfully fetched", result);
   })
 );
+router.get(
+  "/check-availability",
+  inputs.available(),
+  catchAsync(async (req, res, next) => {
+    const result = await bookingQuery.getAllAvailableItems(req);
+    response.success(res, "All availble items fetched", result);
+  })
+);
 
 router.get(
   "/:bookingId",
@@ -51,13 +59,4 @@ router.patch(
   })
 );
 
-router.get(
-  "/check-availability",
-  // inputs.available(),
-  catchAsync(async (req, res, next) => {
-    const result = await bookingQuery.getAllAvailableItems(req);
-    console.log("in the testing");
-    response.success(res, "All availble items fetched", result);
-  })
-);
 module.exports = router;

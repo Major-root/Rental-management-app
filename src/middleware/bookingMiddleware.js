@@ -35,7 +35,7 @@ class BookingMiddleware {
     });
   };
 
-  fetchBookings() {
+  fetchBookings = () => {
     return celebrate({
       [Segments.QUERY]: Joi.object().keys({
         page: Joi.number().default(1),
@@ -44,17 +44,17 @@ class BookingMiddleware {
         q: Joi.string().lowercase(),
       }),
     });
-  }
+  };
 
-  fetchBooking() {
+  fetchBooking = () => {
     return celebrate({
       [Segments.PARAMS]: Joi.object().keys({
         bookingId: Joi.string().uuid().label("bookingId"),
       }),
     });
-  }
+  };
 
-  update() {
+  update = () => {
     return celebrate({
       [Segments.BODY]: Joi.object().keys({
         location: Joi.string().label("location"),
@@ -75,17 +75,21 @@ class BookingMiddleware {
         bookingId: Joi.string().uuid().label("bookingId"),
       }),
     });
-  }
+  };
 
-  available() {
+  available = () => {
     return celebrate({
       [Segments.QUERY]: Joi.object().keys({
         startDate: Joi.date().required().label("startDate"),
-        endDate: Joi.date().default(Joi.ref("startDate")).label("endDate"),
+        endDate: Joi.date()
+          .optional()
+          .default(Joi.ref("startDate"))
+          .greater(Joi.ref("startDate"))
+          .label("endDate"),
         items: Joi.string().label("items"),
       }),
     });
-  }
+  };
 }
 
 exports.inputs = new BookingMiddleware();

@@ -22,7 +22,7 @@ const existingBookingsQuery = (startDate, endDate) => {
 };
 
 const populateBookedItemsPerDay = (existingBookings, bookedItemsPerDay) => {
-  return existingBookings.forEach((booking) => {
+  existingBookings.forEach((booking) => {
     booking.bookingItems.forEach((item) => {
       let currentDate = new Date(booking.startDate);
       while (currentDate <= new Date(booking.endDate)) {
@@ -37,6 +37,7 @@ const populateBookedItemsPerDay = (existingBookings, bookedItemsPerDay) => {
       }
     });
   });
+  return bookedItemsPerDay;
 };
 
 const initializeBookingDays = (startDate, endDate) => {
@@ -117,7 +118,6 @@ exports.createBooking = async (req, next) => {
       include: { model: BookingItem, as: "bookingItems" },
       transaction,
     });
-
     const bookedItemsPerDay = initializeBookingDays(startDate, endDate);
 
     existingBookings.forEach((booking) => {
@@ -287,30 +287,34 @@ exports.updateBooking = async (req) => {
 };
 
 exports.getAllAvailableItems = async (req) => {
-  const { startDate, endDate, items } = req.body;
+  const { startDate, endDate, items } = req.query;
   const { userId } = req.user;
-  const totalItems = await bookedItems.findAll({ where: { userId } });
+  const totalItems = await Item.findAll({ where: { userId } });
   const itemArray = items ? items.split(",") : [];
   const existingBookings = await Booking.findAll({
     where: existingBookingsQuery(startDate, endDate),
     include: { model: BookingItem, as: "bookingItems" },
   });
+  console.log("existingBookings", existingBookings);
 
-  bookedItemsPerDay = initializeBookingDays(startDate, endDate);
+  let bookedItemsPerDay = initializeBookingDays(startDate, endDate);
 
-  populateBookedItemsPerDay(existingBookings, bookedItemsPerDay);
-  // totalItems - bookeditemsperday
+  bookedItemsPerDay = populateBookedItemsPerDay(
+    existingBookings,
+    bookedItemsPerDay
+  );
   const totalInventory = totalItems.reduce((acc, item) => {
     acc[item.name] = item.quantity;
     return acc;
   }, {});
-
   let currentDate = new Date(startDate);
   while (currentDate <= new Date(endDate)) {
     const dateStr = currentDate.toISOString().split("T")[0];
     itemArray.forEach((item) => {
       const bookedQuantity = bookedItemsPerDay[dateStr][item];
-      bookedItemsPerDay[dateStr][item] = totalInventory[item] - bookedQuantity;
+      bookedItemsPerDay[dateStr][item] = bookedQuantity
+        ? totalInventory[item] - bookedQuantity
+        : totalInventory[item];
     });
     currentDate.setDate(currentDate.getDate() + 1);
   }
