@@ -200,7 +200,6 @@ exports.confirmBooking = async (req) => {
 
 exports.getAllBookings = async (req) => {
   try {
-    console.log(req.query);
     let { page = 1, limit = 10, q, client, location, status } = req.query;
 
     page = parseInt(page, 10);
@@ -268,6 +267,7 @@ exports.fetchBooking = async (req) => {
 };
 
 exports.updateBooking = async (req) => {
+  // complete it ASAP
   const { bookingId } = req.params;
   const { items, location, startDate, endDate } = req.body;
   let transaction;
@@ -280,6 +280,7 @@ exports.updateBooking = async (req) => {
     if (location) booking.location = location;
 
     if (startDate || endDate) {
+      //
     }
   } catch (error) {
     throw error;
@@ -295,7 +296,6 @@ exports.getAllAvailableItems = async (req) => {
     where: existingBookingsQuery(startDate, endDate),
     include: { model: BookingItem, as: "bookingItems" },
   });
-  console.log("existingBookings", existingBookings);
 
   let bookedItemsPerDay = initializeBookingDays(startDate, endDate);
 
