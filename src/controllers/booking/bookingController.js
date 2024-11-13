@@ -5,7 +5,18 @@ const response = require("../../utils/response");
 const { inputs } = require("../../middleware/bookingMiddleware");
 const guard = require("../../middleware/guard");
 
+const sheduleLogic = require("../../utils/schedular");
+
 router.use(guard.protect);
+
+router.get(
+  "/shedule",
+  catchAsync(async (req, res, next) => {
+    const result = await sheduleLogic.schedulingLogic();
+    response.success(res, "schedule fetched", result);
+  })
+);
+
 router.post(
   "/create-booking",
   inputs.create(),
@@ -59,4 +70,12 @@ router.patch(
   })
 );
 
+router.get(
+  "/item-supplied",
+  inputs.fetchItemAccrossTime(),
+  catchAsync(async (req, res, next) => {
+    const result = await bookingQuery.itemsSuppliedOverTime(req);
+    response.success(res, "Retrived booking across time", result);
+  })
+);
 module.exports = router;

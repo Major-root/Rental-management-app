@@ -4,6 +4,7 @@ const AppError = require("./src/utils/appError");
 const errorHandler = require("./src/controllers/error/error");
 const cookieParser = require("cookie-parser");
 const helmet = require("helmet");
+const cron = require("./src/utils/cron");
 
 const app = express();
 

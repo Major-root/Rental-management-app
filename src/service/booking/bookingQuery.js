@@ -321,3 +321,87 @@ exports.getAllAvailableItems = async (req) => {
 
   return bookedItemsPerDay;
 };
+
+// create an endpoint that would allow the users to see the number of items they supplied in a month, year or anytime
+// exports.itemsSuppliedOverTime = async (req, res) => {
+//   try {
+//     const { userId } = req.user;
+//     const { months, year, startDate, endDate, status } = req.query;
+
+//     let start, end;
+
+//     if (startDate && endDate) {
+//       start = new Date(startDate);
+//       end = new Date(endDate);
+//     } else if (months) {
+//       end = new Date();
+//       start = new Date();
+//       start.setMonth(start.getMonth() - months);
+//     } else if (year) {
+//       start = new Date(`${year}-01-01`);
+//       end = new Date(`${year}-12-31`);
+//     } else {
+//       end = new Date();
+//       start = new Date();
+//       start.setMonth(start.getMonth() - 1);
+//     }
+
+//     const bookings = await Booking.findAll({
+//       where: {
+//         userId,
+//         status,
+//         [Op.or]: [
+//           { startDate: { [Op.between]: [start, end] } },
+//           { endDate: { [Op.between]: [start, end] } },
+//         ],
+//       },
+//       include: { model: BookingItem, as: "bookingItems" },
+//     });
+
+//     const itemsSupplied = {};
+
+//     bookings.forEach((booking) => {
+//       let bookingStartDate = new Date(booking.startDate);
+//       let bookingEndDate = new Date(booking.endDate);
+
+//       if (bookingStartDate < start) {
+//         bookingStartDate = start;
+//       }
+
+//       if (bookingEndDate > end) {
+//         bookingEndDate = end;
+//       }
+
+//       while (bookingStartDate <= bookingEndDate) {
+//         const currentMonth = bookingStartDate.getMonth();
+//         const lastDayOfMonth = new Date(
+//           bookingStartDate.getFullYear(),
+//           currentMonth + 1,
+//           0
+//         ).getDate();
+//         const remainingDaysInMonth =
+//           lastDayOfMonth - bookingStartDate.getDate() + 1;
+
+//         let daysToCount = Math.min(
+//           remainingDaysInMonth,
+//           (bookingEndDate - bookingStartDate) / (1000 * 60 * 60 * 24) + 1
+//         );
+
+//         booking.bookingItems.forEach((item) => {
+//           if (!itemsSupplied[item.name]) {
+//             itemsSupplied[item.name] = 0;
+//           }
+//           itemsSupplied[item.name] += item.quantity * daysToCount;
+//         });
+
+//         bookingStartDate.setDate(bookingStartDate.getDate() + daysToCount);
+//       }
+//     });
+
+//     return itemsSupplied;
+//   } catch (error) {
+//     throw error;
+//   }
+// };
+
+// create an endpoint that would allow users to checkk how much they have made in a time frame promise

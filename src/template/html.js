@@ -46,7 +46,7 @@ class Html {
       </tbody>
     </table>`;
   };
-  
+
   verifyEmailTemplate = (verificationUrl, firstName) => {
     return `<table width="100%" border="0" cellspacing="0" cellpadding="0" style="width:100%!important">
       <tbody>
@@ -94,9 +94,55 @@ class Html {
       </tbody>
     </table>`;
   };
-    
-  
-  }
-  
-  exports.html = new Html();
-  
+
+  bookingReminderEmail = (name, location, date, bookingUrl) => {
+    return `
+      <table width="100%" border="0" cellspacing="0" cellpadding="0" style="width:100%!important">
+        <tbody>
+          <tr>
+            <td align="center">
+              <table style="border:1px solid #eaeaea;border-radius:5px;margin:40px 0" width="600" border="0" cellspacing="0" cellpadding="40">
+                <tbody>
+                  <tr>
+                    <td align="center">
+                      <div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Roboto','Oxygen','Ubuntu','Cantarell','Fira Sans','Droid Sans','Helvetica Neue',sans-serif;text-align:left;width:465px">
+                        <table width="100%" border="0" cellspacing="0" cellpadding="0" style="width:100%!important">
+                          <tbody>
+                            <tr>
+                              <td align="center">
+                                <div>
+                                  <img src="https://your-logo-url.com/logo.png" width="155" height="65" alt="logo" class="CToWUd">
+                                </div>
+                                <h1 style="color:#000;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Roboto','Oxygen','Ubuntu','Cantarell','Fira Sans','Droid Sans','Helvetica Neue',sans-serif;font-size:18px;font-weight:normal;margin:30px 0;padding:0">Upcoming Booking Reminder</h1>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                        <p style="color:#000;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Roboto','Oxygen','Ubuntu','Cantarell','Fira Sans','Droid Sans','Helvetica Neue',sans-serif;font-size:16px;line-height:24px">Good day Mr/Ms <b>${name}</b>,</p>
+                        <p style="color:#000;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Roboto','Oxygen','Ubuntu','Cantarell','Fira Sans','Droid Sans','Helvetica Neue',sans-serif;font-size:16px;line-height:24px">You have a booking to deliver at <b>${location}</b> on <b>${date}</b>. Please check the app to see the full details about the booking.</p>
+                        <br>
+                        <table width="100%" border="0" cellspacing="0" cellpadding="0" style="width:100%!important">
+                          <tbody>
+                            <tr>
+                              <td align="center">
+                                <a href="${bookingUrl}" style="display:inline-block;background-color:#3FBD98;color:#ffffff;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Roboto','Oxygen','Ubuntu','Cantarell','Fira Sans','Droid Sans','Helvetica Neue',sans-serif;font-size:16px;font-weight:bold;text-decoration:none;padding:15px 25px;border-radius:5px">View Booking Details</a>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                        <p style="color:#000;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Roboto','Oxygen','Ubuntu','Cantarell','Fira Sans','Droid Sans','Helvetica Neue',sans-serif;font-size:16px;line-height:24px;margin-top:20px">Thank you for your service!</p>
+                        <hr style="border:none;border-top:1px solid #eaeaea;margin:26px 0;width:100%">
+                        <p style="color:#666666;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Roboto','Oxygen','Ubuntu','Cantarell','Fira Sans','Droid Sans','Helvetica Neue',sans-serif;font-size:14px;line-height:24px">Best regards,<br>The [Your Company Name] Team</p>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </td>
+          </tr>
+        </tbody>
+      </table>`;
+  };
+}
+
+exports.html = new Html();

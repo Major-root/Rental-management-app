@@ -90,6 +90,18 @@ class BookingMiddleware {
       }),
     });
   };
+
+  fetchItemAccrossTime = () => {
+    return celebrate({
+      [Segments.QUERY]: Joi.object().keys({
+        startDate: Joi.date().label("startDate"),
+        endDate: Joi.date().label("endDate"),
+        // year
+        // months
+        status: Joi.string().label("status"),
+      }),
+    });
+  };
 }
 
 exports.inputs = new BookingMiddleware();
